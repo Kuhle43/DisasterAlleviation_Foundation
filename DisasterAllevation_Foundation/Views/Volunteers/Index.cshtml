@@ -1,0 +1,59 @@
+﻿@model IEnumerable<DisasterAlleviation_Foundation.Models.Volunteer>
+
+@{
+    ViewData["Title"] = "Registered Volunteers";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    {{-- Assuming you are using a custom Register action for Volunteer profile --}}
+    <a asp-action="Register" class="btn btn-primary">Become a Volunteer</a>
+    {{-- If you are using ASP.NET Identity, change this to: asp-area="Identity" asp-page="/Account/Register" --}}
+</p>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Skills)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegistrationDate)
+            </th>
+            <th>
+                Assigned Disaster
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Skills)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegistrationDate)
+                </td>
+                <td>
+                    {{-- FIX: Use the null-conditional operator (?.) --}}
+                    {{-- This ensures the expression evaluates to null before trying to access .Location if AssignedDisaster is null. --}}
+                    @(item.AssignedDisaster?.Location ?? "None (General Pool)")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

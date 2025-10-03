@@ -1,0 +1,56 @@
+﻿@model DisasterAlleviation_Foundation.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+<h2>Register</h2>
+
+@* Add validation summary to show errors like "Password too short" *@
+<div asp-validation-summary="All" class="text-danger"></div> 
+
+<form asp-action="Register" method="post">
+    
+    <div class="form-group">
+        <label asp-for="FullName"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" type="email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        @* --- FIX: Use the 'Password' property from the RegisterViewModel --- *@
+        <label asp-for="Password"></label> 
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        @* Add the Confirm Password field for validation *@
+        <label asp-for="ConfirmPassword"></label> 
+        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group form-check">
+        <input asp-for="IsVolunteer" type="checkbox" class="form-check-input" />
+        <label asp-for="IsVolunteer" class="form-check-label"></label>
+    </div>
+    
+    <br />
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

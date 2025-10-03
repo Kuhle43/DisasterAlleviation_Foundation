@@ -1,0 +1,78 @@
+﻿@model IEnumerable<DisasterAlleviation_Foundation.Models.Disaster>
+
+@{
+    ViewData["Title"] = "Browse Available Tasks";
+}
+
+<h1>Volunteer Tasks</h1>
+
+<p class="lead">
+    Browse the active disaster incidents below. Tasks generally involve logistical support for resource distribution, volunteer coordination, or administrative assistance.
+</p>
+<hr />
+
+@* Display success/error messages passed via TempData from the Controller *@
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="row">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <h4 class="alert-heading">No Active Tasks Available!</h4>
+            <p>Check back later, or contact an administrator for manual assignment.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-primary">@item.Location</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@item.StartDate.ToShortDateString() to @item.EndDate.ToShortDateString()</h6>
+
+                        <p class="card-text flex-grow-1">@item.Description</p>
+
+                        <ul class="list-unstyled mb-3">
+                            <li><strong>Aid Required:</strong> @item.AidTypeRequired</li>
+                            <li><strong>Goods Donated:</strong> <span class="badge bg-warning text-dark">@item.GoodsDonations.Count() items</span></li>
+                            <li><strong>Funds Donated:</strong> <span class="badge bg-info">R @item.MonetaryDonations.Sum(m => m.Amount).ToString("N2")</span></li>
+                        </ul>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                           
+                            <form asp-action="VolunteerForThis" asp-route-id="@item.Id" method="post" class="mt-auto">
+                                <button type="submit" class="btn btn-success btn-block w-100">
+                                    Volunteer for this Task
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-secondary mt-auto w-100">Log in to Volunteer</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

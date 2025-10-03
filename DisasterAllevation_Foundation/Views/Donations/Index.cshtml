@@ -1,0 +1,61 @@
+﻿@model IEnumerable<DisasterAlleviation_Foundation.Models.Donation>
+
+@{
+    ViewData["Title"] = "All Donations";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Make a New Donation</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DonationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DonorName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GoodsDescription)
+            </th>
+            <th>
+                Target Disaster
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DonationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DonorName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @(item.Amount.HasValue ? "R" + Html.DisplayFor(modelItem => item.Amount) : "N/A")
+                </td>
+                <td>
+                    @(string.IsNullOrEmpty(item.GoodsDescription) ? "N/A" : item.GoodsDescription)
+                </td>
+                <td>
+                    @(item.Disaster != null ? item.Disaster.Location : "General Fund")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

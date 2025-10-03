@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Disaster Alleviation: Home";
+}
+
+<div class="welcome-banner">
+    <h1>Welcome to the Disaster Alleviation Foundation</h1>
+    <p class="lead">In the spirit of Gift of the Givers, we provide swift and effective aid to communities in crisis.</p>
+</div>
+
+<div class="row text-center mb-5">
+    <div class="col-md-12">
+        <h3 class="mb-4">Our Mission: Compassion in Action</h3>
+        <p>
+            The Gift of the Givers Foundation is dedicated to organised relief efforts, operating on the principles of **compassion, efficiency, and resilience**. Your involvement helps us manage relief efforts, coordinate volunteers, and facilitate resource allocation to save lives and rebuild communities with greater efficiency.
+        </p>
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title">Need Help? Report a Disaster</h4>
+                <p class="card-text">If you are aware of a natural disaster or emergency requiring immediate intervention, use this form to submit an official report.</p>
+                <a asp-controller="Disasters" asp-action="Report" class="btn btn-danger btn-lg mt-3">Report Incident Now</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="card-title">Be a Giver. Donate Resources.</h4>
+                <p class="card-text">Your monetary or goods donation provides essential aid like food, clothing, and medical supplies to those most affected.</p>
+                <a asp-controller="Donations" asp-action="Create" class="btn btn-success btn-lg mt-3">Donate Resources</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 mt-4">
+        <p>
+            Or, sign up to be a **Volunteer** and track your contributions to relief efforts.
+            @* FIX: Changed asp-controller from "Volunteer" to the correct plural "Volunteers" *@
+            <a asp-controller="Volunteers" asp-action="Register" class="btn btn-outline-primary btn-sm ms-2">Become a Volunteer</a>
+        </p>
+    </div>
+</div>

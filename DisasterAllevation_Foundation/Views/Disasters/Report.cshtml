@@ -1,0 +1,76 @@
+﻿@model DisasterAlleviation_Foundation.Models.Disaster
+
+@{
+    ViewData["Title"] = "Report New Disaster";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h2 class="text-secondary">@ViewData["Title"]</h2>
+    </div>
+    <div class="card-body">
+        <p class="lead text-muted">Use this form to report a new disaster incident, ensuring all required details are accurate.</p>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-8">
+                <form asp-action="Report">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    @* Disaster Start Date *@
+                    <div class="form-group mb-3">
+                        <label asp-for="StartDate" class="control-label"></label>
+                        <input asp-for="StartDate" class="form-control" type="date" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+
+                    @* Disaster End Date *@
+                    <div class="form-group mb-3">
+                        <label asp-for="EndDate" class="control-label"></label>
+                        <input asp-for="EndDate" class="form-control" type="date" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    @* Disaster Location *@
+                    <div class="form-group mb-3">
+                        <label asp-for="Location" class="control-label"></label>
+                        <input asp-for="Location" class="form-control" placeholder="e.g., Cape Town, Western Cape" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+
+                    @* Aid Required Type (Using a Select List for professional presentation) *@
+                    <div class="form-group mb-3">
+                        <label asp-for="AidTypeRequired" class="control-label"></label>
+                        <select asp-for="AidTypeRequired" class="form-control">
+                            <option value="">-- Select Type --</option>
+                            <option value="Money">Monetary Aid</option>
+                            <option value="Goods">Goods/Items Aid</option>
+                            <option value="Both">Both Money and Goods</option>
+                        </select>
+                        <span asp-validation-for="AidTypeRequired" class="text-danger"></span>
+                    </div>
+
+                    @* Disaster Description *@
+                    <div class="form-group mb-4">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Briefly describe the disaster and its impact."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Report Disaster" class="btn btn-primary btn-lg" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-light">
+        <a asp-action="Index" class="btn btn-link text-primary">Back to Disaster List</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
