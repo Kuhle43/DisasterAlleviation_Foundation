@@ -1,0 +1,88 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- develop  # Trigger a CI build whenever code is pushed to the 'develop' branch
+
+pr:
+- develop  # Also trigger on PRs targeting 'develop'
+
+pool:
+  vmImage: 'windows-latest' # Use a Windows agent for typical .NET development
+
+variables:
+  buildConfiguration: 'Release'
+  # Path where the compiled application will be published
+  webProjectPath: 'DisasterAlleviation_Foundation' # Adjust if your main project folder is named differently
+
+stages:
+- stage: CI_Build_Test
+  displayName: 'Build and Run Tests'
+  jobs:
+  - job: Build
+    steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore Dependencies'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Solution'
+      inputs:
+        command: 'build'
+        arguments: '--configuration $(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Run Tests'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj' # Assumes your test project uses 'Tests.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Artifacts'
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: true
+
+    # Upload the published zip file to Azure Pipelines for the deployment stage
+    - task: PublishBuildArtifacts@1
+      displayName: 'Upload Build Artifact'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
+
+- stage: CD_Deploy_Test
+  displayName: 'Deploy to Test Environment'
+  dependsOn: CI_Build_Test # Only run deployment if the build/test stage succeeds
+  condition: succeeded()
+  jobs:
+  - deployment: DeployWebApp
+    displayName: 'Deploy Application'
+    environment: 'Test-Environment' # Define a new environment in Azure DevOps
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@1
+            displayName: 'Download Web Artifact'
+            inputs:
+              artifactName: 'drop'
+              downloadPath: '$(System.DefaultWorkingDirectory)/drop'
+
+          # Task to deploy the application to an Azure App Service (Test Environment)
+          - task: AzureWebApp@1
+            displayName: 'Deploy to Azure Web App (Test)'
+            inputs:
+              azureSubscription: '<Your Azure Service Connection Name>' # e.g., 'MyAzureConnection'
+              appType: 'webApp'
+              appName: 'disaster-allev-test-app' # The name of your Azure App Service for testing
+              package: '$(System.DefaultWorkingDirectory)/drop/**/*.zip'
